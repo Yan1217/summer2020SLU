@@ -1,0 +1,30 @@
+import keras
+keras.__version__
+import tensorflow as tf
+import os, shutil,sys
+import random
+
+original_dataset_dir = '/home/yanru/summer2020/real_and_fake_face_orig'
+training_r = '/home/yanru/summer2020/real_and_fake_face_orig/training_real'
+training_f = '/home/yanru/summer2020/real_and_fake_face_orig/training_fake'
+test_dir  = '/home/yanru/summer2020/real_and_fake_face_ori/test_kaggle'
+
+train_dir = '/home/yanru/summer2020/real_and_fake_all/train'
+validation_dir = '/home/yanru/summer2020/real_and_fake_all/validation'
+train_real = '/home/yanru/summer2020/real_and_fake_all/train/training_real'
+train_fake = '/home/yanru/summer2020/real_and_fake_all/train/training_fake'
+real_validation = '/home/yanru/summer2020/real_and_fake_all/validation/validation_real'
+fake_validation = '/home/yanru/summer2020/real_and_fake_all/validation/validation_fake'
+test_real = '/home/yanru/summer2020/real_and_fake_all/test/testing_real'
+test_fake = '/home/yanru/summer2020/real_and_fake_all/test/testing_fake'
+
+used_model = tf.keras.models.load_model('saved/model/model_larger_data')
+
+used_model.summary()
+
+from keras.preprocessing.image import ImageDataGenerator
+test_datagen = ImageDataGenerator(rescale = 1./255)
+test_generator = test_datagen.flow_from_directory(
+                    test_dir,target_size = (150,150),batch_size = 20,class_mode = 'binary')
+test_loss, test_acc = used_model.evaluate_generator(test_generator, steps=50)
+print('test acc:', test_acc)
